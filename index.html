@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Modern Todo List</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(to right, #fdfbfb, #ebedee);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 20px 120px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      color: #262161;
+      margin-bottom: 30px;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .input-container {
+      display: flex;
+      gap: 12px;
+      max-width: 600px;
+      width: 100%;
+      margin-bottom: 30px;
+      animation: fadeIn 1.2s ease-out;
+      justify-content: center;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 14px 18px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      box-shadow: 0 2px 8px rgba(239, 63, 55, 0.4);
+    }
+
+    button {
+      background-color: #ef3f37;
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 2px 6px rgba(239, 63, 55, 0.4);
+    }
+
+    button:hover {
+      background-color: #c62828;
+      transform: scale(1.05);
+    }
+
+    .todo {
+      background-color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 600px;
+      width: 100%;
+      padding: 16px 22px;
+      margin-bottom: 16px;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      animation: slideIn 0.5s ease forwards;
+    }
+
+    .todo div {
+      color: #333;
+      font-size: 1rem;
+      word-break: break-word;
+      flex: 1;
+    }
+
+    .todo button {
+      background-color: #ff5252;
+      font-size: 0.9rem;
+      padding: 6px 10px;
+      border-radius: 8px;
+      box-shadow: none;
+      white-space: nowrap; /* Prevents text from wrapping */
+      width: 80px; /* Fixed width for the button */
+      height: 30px; /* Adjusts button height */
+    }
+
+    .todo button:hover {
+      background-color: #b71c1c;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #262161;
+      color: #fff;
+      text-align: center;
+      padding: 14px 10px;
+      font-size: 0.95rem;
+      z-index: 10;
+    }
+
+    footer a {
+      color: #ffdd57;
+      text-decoration: none;
+      margin: 0 6px;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .input-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      input[type="text"], button {
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .todo {
+        max-width: 500px;
+        flex-direction: row;
+        padding: 12px 16px;
+      }
+
+      .todo button {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+        margin-left: 8px; /* To prevent overlap */
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .input-container {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+
+      .todo {
+        padding: 12px 14px;
+        flex-direction: row;
+        align-items: center;
+        max-width: 100%;
+      }
+
+      .todo button {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+        margin-left: 8px; /* Space between todo and button */
+        width: 70px; /* Smaller width for mobile devices */
+        height: 28px; /* Smaller height for mobile devices */
+      }
+
+      footer {
+        padding: 10px 5px;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>📝 Todo List</h1>
+
+  <div class="input-container">
+    <input type="text" placeholder="Add your todo here" />
+    <button onclick="addtodo()">Add Todo</button>
+  </div>
+
+  <script>
+    let ctr = 1;
+
+    function deleteTodo(index) {
+      const element = document.getElementById(index);
+      if (element) {
+        element.parentNode.removeChild(element);
+      }
+    }
+
+    function addtodo() {
+      const inputEl = document.querySelector("input");
+      const value = inputEl.value;
+
+      if (value.trim() === "") {
+        alert("Please enter a todo!");
+        return;
+      }
+
+      const newDivEl = document.createElement("div");
+      newDivEl.setAttribute("id", ctr);
+      newDivEl.setAttribute("class", "todo");
+
+      newDivEl.innerHTML =
+        "<div>" +
+        value +
+        '</div><button onclick="deleteTodo(' +
+        ctr +
+        ')">Delete</button>';
+
+      ctr = ctr + 1;
+
+      document.body.appendChild(newDivEl);
+      inputEl.value = "";
+    }
+  </script>
+
+  <footer>
+    Made by <strong>Shakib</strong> |
+    📧 <a href="mailto:imshakibul@gmail.com">imshakibul@gmail.com</a> |
+    🌐 <a href="https://www.WebNext.io" target="_blank">www.WebNext.io</a>
+  </footer>
+</body>
+</html>
